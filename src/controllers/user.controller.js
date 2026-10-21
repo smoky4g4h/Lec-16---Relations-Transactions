@@ -13,7 +13,14 @@ export const createUser = async (req, res) => {
         }
 
         // Check for existing user
-        
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                OR:[
+                    {username},
+                    {email}
+                ]
+            }
+        });
 
         if (existingUser) {
             return res.status(409).json({
@@ -23,7 +30,12 @@ export const createUser = async (req, res) => {
         }
 
         // Create a new user
-        
+        const user = await prisma.user.create({
+            data: {
+                username,
+                email
+            }
+        });
 
         return res.status(201).json({
             success: true,
